@@ -17,10 +17,7 @@ app.listen(port, () => {
 app.get("/covid", (req, res) => {
 	covidTrackerHttpClient.get('/us/current.json')
 	.then((response: AxiosResponse) => {
-		// console.log(response.data);
 		const covidData = response.data;
-	// tslint:disable-next-line:no-console
-		console.log(covidData[0].positive);
 		res.send(`Currently there are ${covidData[0].positive} positive cases in the US.`);
 	})
 	.catch(error => {
