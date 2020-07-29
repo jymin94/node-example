@@ -1,27 +1,16 @@
 import express from "express";
-import axios, { AxiosResponse } from "axios";
+import {formatNumber, getDayOneTotal} from "./covid";
 const app = express();
 const port = 8080;
 
-const covidTrackerHttpClient = axios.create({
-	baseURL: "https://covidtracking.com/api/v1/"
-});
-
-app.get("/", (req, res) => res.send('Hello World!'))
+app.get("/", (req, res) => res.send('Hello World!'));
 
 app.listen(port, () => {
 	// tslint:disable-next-line:no-console
-	console.log(`Example app listening at http://localhost:${port}`)
+	console.log(`Example app listening at http://localhost:${port}`);
 });
 
-app.get("/covid", (req, res) => {
-	covidTrackerHttpClient.get('/us/current.json')
-	.then((response: AxiosResponse) => {
-		const covidData = response.data;
-		res.send(`Currently there are ${covidData[0].positive} positive cases in the US.`);
-	})
-	.catch(error => {
-		// tslint:disable-next-line:no-console
-		console.log(error)
-	});
+app.get("/covid", async (req, res) => {
+	const confirmedCases: number = await getDayOneTotal();
+	res.send(`There are ${formatNumber(confirmedCases)} confirmed cases in the United States`);
 });
